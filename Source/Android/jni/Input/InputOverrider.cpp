@@ -59,4 +59,12 @@ Java_org_dolphinemu_dolphinemu_features_input_model_InputOverrider_getGateRadius
   const auto casted_stick = static_cast<ciface::Touch::ControlID>(stick);
   return ciface::Touch::GetGateRadiusAtAngle(controller_index, casted_stick, angle);
 }
+
+JNIEXPORT double JNICALL
+Java_org_dolphinemu_dolphinemu_features_input_model_InputOverrider_getDeadzoneRadiusAtAngle(
+        JNIEnv*, jclass, int controller_index, int stick, double angle)
+{
+    const auto casted_stick = static_cast<ciface::Touch::ControlID>(stick);
+    return ciface::Touch::GetDeadzoneRadiusAtAngle(controller_index, casted_stick, angle);
+}
 };

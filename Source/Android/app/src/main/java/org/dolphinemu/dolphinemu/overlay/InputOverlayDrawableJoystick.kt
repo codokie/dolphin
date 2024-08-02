@@ -212,9 +212,11 @@ class InputOverlayDrawableJoystick(
         val angle = atan2(y, x) + Math.PI + Math.PI
         val radius = hypot(y, x)
         val maxRadius = InputOverrider.getGateRadiusAtAngle(controllerIndex, xControl, angle)
-        if (radius > maxRadius) {
-            x = maxRadius * cos(angle)
-            y = maxRadius * sin(angle)
+        val minRadius = InputOverrider.getDeadzoneRadiusAtAngle(controllerIndex, xControl, angle)
+        val clampedRadius = if (radius < minRadius) 0.0 else radius.coerceAtMost(maxRadius)
+        if (radius != clampedRadius) {
+            x = clampedRadius * cos(angle)
+            y = clampedRadius * sin(angle)
             this.x = x.toFloat()
             this.y = y.toFloat()
         }

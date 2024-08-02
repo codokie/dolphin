@@ -236,37 +236,46 @@ void ClearControlState(int controller_index, ControlID control)
   input_state.overriding = false;
 }
 
+ControllerEmu::ControlGroup* GetStickGroup(int controller_index, ControlID stick) {
+  switch (stick) {
+    case ControlID::GCPAD_MAIN_STICK_X:
+    case ControlID::GCPAD_MAIN_STICK_Y:
+      return Pad::GetGroup(controller_index, PadGroup::MainStick);
+    case ControlID::GCPAD_C_STICK_X:
+    case ControlID::GCPAD_C_STICK_Y:
+      return Pad::GetGroup(controller_index, PadGroup::CStick);
+    case ControlID::NUNCHUK_STICK_X:
+    case ControlID::NUNCHUK_STICK_Y:
+      return Wiimote::GetNunchukGroup(controller_index, WiimoteEmu::NunchukGroup::Stick);
+    case ControlID::CLASSIC_LEFT_STICK_X:
+    case ControlID::CLASSIC_LEFT_STICK_Y:
+      return Wiimote::GetClassicGroup(controller_index, WiimoteEmu::ClassicGroup::LeftStick);
+    case ControlID::CLASSIC_RIGHT_STICK_X:
+    case ControlID::CLASSIC_RIGHT_STICK_Y:
+      return Wiimote::GetClassicGroup(controller_index, WiimoteEmu::ClassicGroup::RightStick);
+    default:
+      ASSERT(false);
+      return nullptr;
+  }
+}
+
 double GetGateRadiusAtAngle(int controller_index, ControlID stick, double angle)
 {
-  ControllerEmu::ControlGroup* group;
-
-  switch (stick)
-  {
-  case ControlID::GCPAD_MAIN_STICK_X:
-  case ControlID::GCPAD_MAIN_STICK_Y:
-    group = Pad::GetGroup(controller_index, PadGroup::MainStick);
-    break;
-  case ControlID::GCPAD_C_STICK_X:
-  case ControlID::GCPAD_C_STICK_Y:
-    group = Pad::GetGroup(controller_index, PadGroup::CStick);
-    break;
-  case ControlID::NUNCHUK_STICK_X:
-  case ControlID::NUNCHUK_STICK_Y:
-    group = Wiimote::GetNunchukGroup(controller_index, WiimoteEmu::NunchukGroup::Stick);
-    break;
-  case ControlID::CLASSIC_LEFT_STICK_X:
-  case ControlID::CLASSIC_LEFT_STICK_Y:
-    group = Wiimote::GetClassicGroup(controller_index, WiimoteEmu::ClassicGroup::LeftStick);
-    break;
-  case ControlID::CLASSIC_RIGHT_STICK_X:
-  case ControlID::CLASSIC_RIGHT_STICK_Y:
-    group = Wiimote::GetClassicGroup(controller_index, WiimoteEmu::ClassicGroup::RightStick);
-    break;
-  default:
-    ASSERT(false);
+  ControllerEmu::ControlGroup* group = GetStickGroup(controller_index, stick);
+  if (group == nullptr) {
     return 0;
   }
 
   return static_cast<ControllerEmu::ReshapableInput*>(group)->GetGateRadiusAtAngle(angle);
+}
+
+double GetDeadzoneRadiusAtAngle(int controller_index, ControlID stick, double angle)
+{
+  ControllerEmu::ControlGroup* group = GetStickGroup(controller_index, stick);
+  if (group == nullptr) {
+    return 0;
+  }
+
+  return static_cast<ControllerEmu::ReshapableInput*>(group)->GetDeadzoneRadiusAtAngle(angle);
 }
 }  // namespace ciface::Touch

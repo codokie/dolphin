@@ -17,6 +17,7 @@ object InputOverrider {
 
     // Angle is in radians and should be non-negative
     external fun getGateRadiusAtAngle(emuPadId: Int, stick: Int, angle: Double): Double
+    external fun getDeadzoneRadiusAtAngle(emuPadId: Int, stick: Int, angle: Double): Double
 
     object ControlId {
         const val GCPAD_A_BUTTON = 0
